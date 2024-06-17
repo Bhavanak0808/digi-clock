@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>React DOM Improvement</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+ body {
+            font-family: Arial, sans-serif;
+            background: url('https://www.lapendulerie.com/wp-content/uploads/2021/11/Regulateurs-2-2000x826.jpg');
+            text-align: center;
+            padding: 50px;
+        }
+        h1 {
+            color: #333;
+        }
+        .time-container {
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            background-color: blanchedalmond;
+        }
+    </style>
+</head>
+<body>
+    <h1>My Remainder-notes and Clock</h1>
+
+    <br>
+
+    <!-- a div which is being updated using react -->
+    <div class="time-container" id="reactDiv"></div>
+
+    <script type="text/babel">
+        const { useEffect, useState } = React;
+
+        function TimeDisplay() {
+            const [time, setTime] = useState(new Date());
+            const [items, setItems] = useState(["Added Item"]);
+            const [newItem, setNewItem] = useState("");
+
+            useEffect(() => {
+                const intervalId = setInterval(() => setTime(new Date()), 1000);
+                return () => clearInterval(intervalId);
+            }, []);
+
+            const addItem = () => {
+                if (newItem.trim() !== "") {
+                    setItems([...items, newItem]);
+                    setNewItem("");
+                }
+            };
+
+            return (
+                <div>
+                    <p>{time.toString()}</p>
+                    <div style={{ display: "flex", justifyContent: "center", gap: "10px" }}>
+                        <input
+                            type="text"
+                            value={newItem}
+                            onChange={(e) => setNewItem(e.target.value)}
+                            placeholder="Add item"
+                        />
+                        <button onClick={addItem}>Add</button>
+                        <select>
+                            {items.map((item, index) => (
+                                <option key={index}>{item}</option>
+                            ))}
+                        </select>
+                    </div>
+                </div>
+            );
+        }
+
+        const rootNode = ReactDOM.createRoot(document.getElementById("reactDiv"));
+        rootNode.render(<TimeDisplay />);
+    </script>
+</body>
+</html>
